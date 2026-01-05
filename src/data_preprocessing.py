@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def load_and_clean_data(path):
     df = pd.read_csv(path)
     df.replace("?", pd.NA, inplace=True)
