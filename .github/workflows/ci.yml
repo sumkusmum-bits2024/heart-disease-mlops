@@ -9,40 +9,69 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ----------------------------
+      # Checkout repo
+      # ----------------------------
       - uses: actions/checkout@v4
 
+      # ----------------------------
+      # Setup Python
+      # ----------------------------
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
+      # ----------------------------
+      # Install dependencies
+      # ----------------------------
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # ----------------------------
+      # Run tests
+      # ----------------------------
       - name: Run tests
         run: pytest
 
+      # ----------------------------
+      # Run training
+      # ----------------------------
       - name: Run training
         run: |
           export PYTHONPATH=$PYTHONPATH:.
           python src/train.py
 
+      # ----------------------------
+      # Find latest MLflow run
+      # ----------------------------
       - name: Find latest MLflow run
         id: latest_run
         run: |
-          # MLflow default experiment folder
           EXP_DIR="mlruns/0"
-          # Find latest run folder by modification time
-          LATEST_RUN=$(ls -td $EXP_DIR/* | head -1)
-          echo "LATEST_RUN=$LATEST_RUN" >> $GITHUB_ENV
-          echo "Latest run detected: $LATEST_RUN"
+          if [ -d "$EXP_DIR" ] && [ "$(ls -A $EXP_DIR)" ]; then
+            LATEST_RUN=$(ls -td $EXP_DIR/* | head -1)
+            echo "LATEST_RUN=$LATEST_RUN" >> $GITHUB_ENV
+            echo "Latest run detected: $LATEST_RUN"
+          else
+            echo "No MLflow runs found."
+            echo "LATEST_RUN=" >> $GITHUB_ENV
+          fi
 
+      # ----------------------------
+      # Upload latest MLflow run
+      # ----------------------------
       - name: Upload latest MLflow run
+        if: env.LATEST_RUN != ''
         uses: actions/upload-artifact@v4
         with:
           name: latest-mlflow-run
           path: ${{ env.LATEST_RUN }}
 
+      # ----------------------------
+      # Upload API model folder
+      # ----------------------------
       - name: Upload API model
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: api-model
