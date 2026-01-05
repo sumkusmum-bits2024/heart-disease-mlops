@@ -47,25 +47,26 @@ jobs:
       - name: Find latest MLflow run
         id: latest_run
         run: |
-          EXP_DIR="mlruns/0"
+          # Find the experiment ID folder automatically
+          EXP_DIR=$(ls -td mlruns/* | head -1)
           if [ -d "$EXP_DIR" ] && [ "$(ls -A $EXP_DIR)" ]; then
             LATEST_RUN=$(ls -td $EXP_DIR/* | head -1)
-            echo "LATEST_RUN=$LATEST_RUN" >> $GITHUB_ENV
+            echo "LATEST_RUN=$LATEST_RUN" >> $GITHUB_OUTPUT
             echo "Latest run detected: $LATEST_RUN"
           else
+            echo "LATEST_RUN=" >> $GITHUB_OUTPUT
             echo "No MLflow runs found."
-            echo "LATEST_RUN=" >> $GITHUB_ENV
           fi
 
       # ----------------------------
       # Upload latest MLflow run
       # ----------------------------
       - name: Upload latest MLflow run
-        if: env.LATEST_RUN != ''
+        if: steps.latest_run.outputs.LATEST_RUN != ''
         uses: actions/upload-artifact@v4
         with:
           name: latest-mlflow-run
-          path: ${{ env.LATEST_RUN }}
+          path: ${{ steps.latest_run.outputs.LATEST_RUN }}
 
       # ----------------------------
       # Upload API model folder
