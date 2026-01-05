@@ -26,3 +26,8 @@ jobs:
           export PYTHONPATH=$PYTHONPATH:.
           python src/train.py
 
+      - name: Upload MLflow runs
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-runs
+          path: mlruns
