@@ -1,6 +1,7 @@
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
+
 def prepare_features(df):
     X = df.drop("target", axis=1)
     y = df["target"]
@@ -14,5 +15,3 @@ def prepare_features(df):
     X_test_scaled = scaler.transform(X_test)
 
     return X_train_scaled, X_test_scaled, y_train, y_test, scaler
-
-
