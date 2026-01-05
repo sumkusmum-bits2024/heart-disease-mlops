@@ -12,7 +12,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY api/ api/
 COPY src/ src/
 COPY data/ data/         # if you have local data for testing
-COPY api/model.pkl api/scaler.pkl api/  # pre-trained models if needed
 
 # Expose the port for FastAPI
 EXPOSE 8000
