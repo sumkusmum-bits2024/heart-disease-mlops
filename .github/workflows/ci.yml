@@ -22,4 +22,7 @@ jobs:
         run: pytest
 
       - name: Run training
-        run: python src/train.py
+        run: |
+          export PYTHONPATH=$PYTHONPATH:.
+          python src/train.py
+
