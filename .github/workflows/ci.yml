@@ -28,6 +28,14 @@ jobs:
         run: pip install -r requirements.txt
 
       # ----------------------------
+      # Lint code
+      # ----------------------------
+      - name: Lint code
+        run: |
+          pip install flake8
+          flake8 src/ tests/
+
+      # ----------------------------
       # Run tests
       # ----------------------------
       - name: Run tests
@@ -42,17 +50,17 @@ jobs:
           python src/train.py
 
       # ----------------------------
-      # Find latest MLflow run
+      # Find latest MLflow run dynamically
       # ----------------------------
       - name: Find latest MLflow run
         id: latest_run
         run: |
-          # Find the experiment ID folder automatically
-          EXP_DIR=$(ls -td mlruns/* | head -1)
+          # Get the most recent experiment folder
+          EXP_DIR=$(ls -td mlruns/* 2>/dev/null | head -1 || echo "")
           if [ -d "$EXP_DIR" ] && [ "$(ls -A $EXP_DIR)" ]; then
             LATEST_RUN=$(ls -td $EXP_DIR/* | head -1)
             echo "LATEST_RUN=$LATEST_RUN" >> $GITHUB_OUTPUT
-            echo "Latest run detected: $LATEST_RUN"
+            echo "Latest MLflow run detected: $LATEST_RUN"
           else
             echo "LATEST_RUN=" >> $GITHUB_OUTPUT
             echo "No MLflow runs found."
