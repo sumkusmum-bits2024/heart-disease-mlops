@@ -4,6 +4,10 @@ import pandas as pd
 
 app = FastAPI()
 
+@app.get("/")
+def root():
+    return {"message": "Heart Disease ML API is live!"}
+
 model = joblib.load("api/model.pkl")
 scaler = joblib.load("api/scaler.pkl")
 
@@ -24,3 +28,4 @@ def predict(features: dict):
         "prediction": int(prob > 0.5),
         "confidence": float(prob)
     }
+
