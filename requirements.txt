@@ -8,3 +8,4 @@ uvicorn
 mlflow
 pytest
 joblib
+httpx
