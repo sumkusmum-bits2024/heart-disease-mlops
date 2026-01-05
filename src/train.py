@@ -16,12 +16,14 @@ from sklearn.metrics import (
     roc_auc_score
 )
 
+
 # ---------------------------------------------------
 # Load data
 # ---------------------------------------------------
 df = load_and_clean_data("data/heart.csv")
 
 X_train, X_test, y_train, y_test, scaler = prepare_features(df)
+
 
 # ---------------------------------------------------
 # Models to evaluate
@@ -35,6 +37,7 @@ mlflow.set_experiment("HeartDisease_MLOps")
 
 best_auc = 0
 best_model = None
+
 
 # ---------------------------------------------------
 # Training + Cross Validation
@@ -81,6 +84,7 @@ for name, model in models.items():
         if auc > best_auc:
             best_auc = auc
             best_model = model
+
 
 # ---------------------------------------------------
 # Save best model for API
