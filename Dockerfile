@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code
 COPY api/ api/
 COPY src/ src/
-COPY data/ data/         # if you have local data for testing
+# COPY data/ data/         # if you have local data for testing
 
 # Expose the port for FastAPI
 EXPOSE 8000
